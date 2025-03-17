@@ -1,0 +1,9 @@
+
+
+cadena1="00000011001000101000000110010011"
+cadena2="00000011001000101000000110010011"
+
+if(cadena1==cadena2):
+    print(True)
+else:
+    print(False)
