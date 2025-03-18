@@ -5,9 +5,10 @@ x = 0
 
 
 class Lexico(Lexer):
-    tokens = {TIPOIC,TIPOI,TIPOR,TIPOS,TIPOB,TIPOJ,TIPOU, REGISTER,CONSTANTE, COMMA, PA, PB }
+    tokens = {TIPOIC,TIPOI,TIPOR,TIPOS,TIPOB,TIPOU,ETIQUETA,REGISTER,CONSTANTE, COMMA, PA, PB }
     ignore = ' \t\n'
 
+#TIPOJ,TIPOU,
     #tipo I de carga
     TIPOIC=r'lbu|lb|lhu|lh|lw'
     #tipo I
@@ -21,12 +22,14 @@ class Lexico(Lexer):
     #tipo B
     TIPOB=r'bltu|bgeu|beq|bne|blt|bge'
     
+    
     #tipo J
-    TIPOJ= r"jal"
+    #TIPOJ= r"jal"
 
     #tipo U
     TIPOU= r'lui|auipc'
 
+    
 
     COMMA = r','
     REGISTER = r'\b(x(?:[0-9]|[1-2][0-9]|3[0-1])|zero|ra|sp|gp|tp|t0|t1|t2|s0|fp|s1|a0|a1|a2|a3|a4|a5|a6|a7|s2|s3|s4|s5|s6|s7|s8|s9|s10|s11|t3|t4|t5|t6)\b'#X(?:[0-9]|[1-2][0-9]|3[0-1])
@@ -34,7 +37,11 @@ class Lexico(Lexer):
 
     PA=r'\('
     PB=r'\)'
+
+    ETIQUETA = r'[a-zA-Z_][a-zA-Z0-9_]*(:)?'
     
+
+
     
 
     def REGISTER(self, t):
@@ -52,6 +59,7 @@ class Lexico(Lexer):
             t.value = alias_a_numero[t.value] 
 
         return t
+    
 
     def error(self, t):
         print(f"-----\nCarácter no válido: {t.value[0]} en expresión #{Counter.contLn} índice: {self.index}. Corrija y reintente.")

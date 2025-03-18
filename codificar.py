@@ -241,6 +241,99 @@ class Codificar:#......clase
 
         return codificada
     
+    #---------------------------------tipoB
+    @classmethod
+    def tipoB(cls, i, o1, o2, etiqueta):
+
+        direccion_etiqueta = Counter.etiquetas.get(etiqueta, None)
+        if direccion_etiqueta is None:
+            print(f"Error: Etiqueta '{etiqueta}' no encontrada.")
+            return noValidaC()
+        
+        offset =(direccion_etiqueta - Counter.bytes)//2
+
+        if (offset < -4096 or offset > 4094):
+            print(f"Error: Offset fuera de rango para la etiqueta '{etiqueta}'.")
+            return noValidaC()
+        
+        c=""
+        if(offset<0):
+            c= complemento(offset,13)
+        else:
+            c=str( format(offset,'013b')) 
+
+        imm12 = c[0]
+        imm10_5 =c[1:7]
+        imm4_1 = c[7:11]
+        imm11 = c[11] 
+
+        opcode="1100011"
+
+        funct3=""
+        if(i=="beq"):
+            funct3="000"
+        elif(i=="bne"):#func3
+            funct3=str( format(1,'03b'))
+        elif(i=="blt"):#func3
+            funct3=str( format(4,'03b'))
+        elif(i=="bge"):#func3
+            funct3=str( format(5,'03b'))
+        elif(i=="bltu"):#func3
+            funct3=str( format(6,'03b'))
+        elif(i=="bgeu"):#func3
+            funct3=str( format(7,'03b'))
+
+        rs1=str( format(int(o1[1:]),'05b'))#agregamos rs1
+        rs2=str( format(int(o2[1:]),'05b')) #agregamos rs2
+    
+        
+                        #segun su tipo lo guarda
+        codificada=""
+        if(Counter.interface==0):
+            codificada = imm12+imm10_5+rs2+rs1+funct3+imm4_1+imm11+opcode
+        if(Counter.interface==1):
+            codificada=f"{imm12}   {imm10_5}  {rs2}  {rs1}   {funct3}     {imm4_1}    {imm11}    {opcode}"
+
+        return codificada
+
+    
+
+    #-----------------------------------------------------------------u
+    @classmethod
+    def tipoU(cls,i,d,imm):
+
+        if(int(imm)< -(2**31) or int(imm)> ((2**31) - 1)):
+            return noValidaC
+
+
+        opcode=""
+        if(i=="lui"):
+            opcode="0110111"
+        elif(i=="auipc"):
+            opcode="0010111"
+
+        
+        rd=str( format(int(d[1:]),'05b'))#  rd
+
+        imm20=""
+        if(int(imm)<0):#funcion 7
+            imm20= complemento(int(imm),20)
+        else:
+            imm20=str( format(int(imm),'020b')) #agregamos imm
+
+
+                                #segun su tipo lo guarda
+        codificada=""
+        if(Counter.interface==0):
+            codificada = imm20+rd+opcode
+        if(Counter.interface==1):
+            codificada=f"{imm20}   {rd}  {opcode}"
+
+        return codificada
+
+        
+
+
 
         
         
